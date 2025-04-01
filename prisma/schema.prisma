@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Jogador {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  chavePix    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  torneios    JogadorTorneio[]
+  vitoriasP1  Torneio[] @relation("PrimeiroColocado")
+  vitoriasP2  Torneio[] @relation("SegundoColocado")
+}
+
+model Torneio {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  data            DateTime  @default(now())
+  buyIn           Float
+  tempoBlind      Int       // em minutos
+  smallBlindInicial String  // alterado para String para permitir valores com vírgula
+  bigBlindInicial   String  // alterado para String para permitir valores com vírgula
+  status          String    @default("CONFIGURADO") // CONFIGURADO, EM_ANDAMENTO, FINALIZADO
+  primeiroColocadoId Int?
+  segundoColocadoId  Int?
+  primeiroColocado   Jogador? @relation("PrimeiroColocado", fields: [primeiroColocadoId], references: [id])
+  segundoColocado    Jogador? @relation("SegundoColocado", fields: [segundoColocadoId], references: [id])
+  jogadores       JogadorTorneio[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model JogadorTorneio {
+  id         Int      @id @default(autoincrement())
+  jogadorId  Int
+  torneioId  Int
+  reentradas Int      @default(0)
+  jogador    Jogador  @relation(fields: [jogadorId], references: [id])
+  torneio    Torneio  @relation(fields: [torneioId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([jogadorId, torneioId])
+} 
