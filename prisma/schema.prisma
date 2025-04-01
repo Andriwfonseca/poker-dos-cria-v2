@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Jogador {
@@ -19,6 +19,7 @@ model Jogador {
   torneios    JogadorTorneio[]
   vitoriasP1  Torneio[] @relation("PrimeiroColocado")
   vitoriasP2  Torneio[] @relation("SegundoColocado")
+  jogosCache  JogadorCacheta[]
 }
 
 model Torneio {
@@ -50,4 +51,62 @@ model JogadorTorneio {
   updatedAt  DateTime @updatedAt
 
   @@unique([jogadorId, torneioId])
+}
+
+// Modelos para o jogo de Cacheta
+model JogoCacheta {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  data        DateTime  @default(now())
+  valorEntrada Float    // Valor de cada entrada
+  status      String    @default("EM_ANDAMENTO") // EM_ANDAMENTO, FINALIZADO
+  vencedorId  Int?      // ID do jogador que venceu (JogadorCacheta.id)
+  valorPremiacao Float? // Valor do prêmio para o vencedor
+  jogadores   JogadorCacheta[]
+  rodadas     RodadaCacheta[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model JogadorCacheta {
+  id           Int      @id @default(autoincrement())
+  jogadorId    Int
+  jogoId       Int
+  pontos       Int      @default(10) // Começa com 10 pontos
+  reentradas   Int      @default(0)  // Número de reentradas
+  jogador      Jogador  @relation(fields: [jogadorId], references: [id])
+  jogo         JogoCacheta  @relation(fields: [jogoId], references: [id])
+  rodadas      RodadaJogadorCacheta[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([jogadorId, jogoId])
+}
+
+model RodadaCacheta {
+  id           Int      @id @default(autoincrement())
+  jogoId       Int
+  numero       Int      // Número da rodada
+  jogo         JogoCacheta  @relation(fields: [jogoId], references: [id])
+  jogadores    RodadaJogadorCacheta[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([jogoId, numero])
+}
+
+model RodadaJogadorCacheta {
+  id           Int      @id @default(autoincrement())
+  rodadaId     Int
+  jogadorCachetaId Int
+  acao         String   // FOI, CORREU
+  resultado    String?  // GANHOU, PERDEU (null se CORREU)
+  pontosAntes  Int      // Pontos antes da rodada
+  pontosApos   Int      // Pontos após a rodada
+  rodada       RodadaCacheta  @relation(fields: [rodadaId], references: [id])
+  jogadorCacheta JogadorCacheta  @relation(fields: [jogadorCachetaId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([rodadaId, jogadorCachetaId])
 } 

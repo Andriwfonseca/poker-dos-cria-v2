@@ -10,7 +10,7 @@ export default function Home() {
         </p>
       </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Link href="/jogadores" className="block">
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
             <h2 className="text-2xl font-bold mb-3 text-blue-700">Jogadores</h2>
@@ -27,6 +27,16 @@ export default function Home() {
             <p>
               Crie e gerencie torneios, configure blinds e acompanhe em tempo
               real.
+            </p>
+          </div>
+        </Link>
+
+        <Link href="/cacheta" className="block">
+          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+            <h2 className="text-2xl font-bold mb-3 text-blue-700">Cacheta</h2>
+            <p>
+              Gerencie jogos de cacheta, registre rodadas e acompanhe a
+              pontuação.
             </p>
           </div>
         </Link>

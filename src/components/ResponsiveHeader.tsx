@@ -34,6 +34,11 @@ export default function ResponsiveHeader() {
                 </Link>
               </li>
               <li>
+                <Link href="/cacheta" className="hover:text-blue-200">
+                  Cacheta
+                </Link>
+              </li>
+              <li>
                 <Link href="/ranking" className="hover:text-blue-200">
                   Ranking
                 </Link>
@@ -75,6 +80,14 @@ export default function ResponsiveHeader() {
                     className="block py-2 hover:bg-blue-700 px-2 rounded"
                   >
                     <i className="fas fa-trophy mr-2"></i> Torneios
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/cacheta"
+                    className="block py-2 hover:bg-blue-700 px-2 rounded"
+                  >
+                    <i className="fas fa-dice mr-2"></i> Cacheta
                   </Link>
                 </li>
                 <li>
